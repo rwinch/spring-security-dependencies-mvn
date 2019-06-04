@@ -12,7 +12,9 @@ stage('Check Dependencies') {
 	node {
 		try {
 			checkout scm
-			sh "./mvnw -U package"
+			withEnv(["JAVA_HOME=${ tool 'jdk8' }"]) {
+				sh "./mvnw -U package"
+			}
 		} catch(Throwable t) {
 			final def RECIPIENTS = [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']]
 			def subject = "FAILING: Build ${env.JOB_NAME} ${env.BUILD_NUMBER} status is now FAILING"
